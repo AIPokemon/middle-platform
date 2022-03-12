@@ -2,7 +2,7 @@
 Author:  Hata
 Date: 2022-03-11 23:34:18
 LastEditors: Hata
-LastEditTime: 2022-03-12 01:57:44
+LastEditTime: 2022-03-12 12:13:34
 FilePath: \middle-platform\showdown_client\client.py
 Description: 
 '''
@@ -16,7 +16,13 @@ from showdown_client.exception import *
 
 def build_url(scheme: str, domain: str, path: str, params: list, query: dict):
     path_str = parse.urljoin(path, *params)
-    query_str = '&'.join([f'{k}={v}' for k, v in query.items()])
+    query_list = []
+
+    for k, v in query.items():
+        if k and v:
+            query_list.append(f'{k}={v}')
+
+    query_str = '&'.join(query_list)
     return parse.urlunparse((scheme, domain, path_str, '', query_str, ''))
 
 
