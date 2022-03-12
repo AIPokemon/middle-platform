@@ -2,7 +2,7 @@
 Author:  Hata
 Date: 2022-03-11 23:34:18
 LastEditors: Hata
-LastEditTime: 2022-03-12 12:13:34
+LastEditTime: 2022-03-13 23:41:55
 FilePath: \middle-platform\showdown_client\client.py
 Description: 
 '''
@@ -15,7 +15,7 @@ from showdown_client.exception import *
 
 
 def build_url(scheme: str, domain: str, path: str, params: list, query: dict):
-    path_str = parse.urljoin(path, *params)
+    path_str = '/'.join([path, *params])
     query_list = []
 
     for k, v in query.items():
@@ -38,13 +38,16 @@ def do_request(method: str, scheme: str, domain: str,
         headers=headers
     )
 
-    resp: bytes = request.urlopen(req).read()
+    resp = request.urlopen(req)
+    resp_bytes = resp.read()
     resp_type = resp_type.lower()
 
     if resp_type == 'json':
-        return json.loads(resp)
+        return json.loads(resp_bytes)
     elif resp_type == 'str':
-        return resp.decode('utf-8')
+        return resp_bytes.decode('utf-8')
+    elif resp_type == 'response':
+        return resp
     else:
         return None
 
